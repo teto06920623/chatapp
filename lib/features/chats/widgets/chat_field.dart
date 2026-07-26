@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:chat_app_ui/core/cubit/theme_cubit.dart';
 import 'package:chat_app_ui/core/utils/screen_size.dart';
 import 'package:flutter/material.dart';

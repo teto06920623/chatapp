@@ -1,0 +1,2896 @@
+﻿=== Directory Tree ===
+
+📁 firbase_chat_app_ui
+├── assets
+├── lib
+│   ├── core
+│   │   ├── cubit
+│   │   │   └── theme_cubit.dart
+│   │   ├── service
+│   │   │   └── cach_helper.dart
+│   │   └── utils
+│   │       ├── theme
+│   │       │   ├── dark_theme.dart
+│   │       │   └── light_theme.dart
+│   │       ├── colors.dart
+│   │       └── screen_size.dart
+│   ├── features
+│   │   ├── Auth
+│   │   │   ├── cubit
+│   │   │   │   ├── auth_cubit.dart
+│   │   │   │   └── auth_state.dart
+│   │   │   ├── model
+│   │   │   │   └── user_model.dart
+│   │   │   ├── views
+│   │   │   │   ├── login_view.dart
+│   │   │   │   └── sign_up_view.dart
+│   │   │   └── widgets
+│   │   │       ├── auth_button.dart
+│   │   │       ├── forget_button.dart
+│   │   │       ├── header_text_auth.dart
+│   │   │       ├── normal_text_field.dart
+│   │   │       ├── or_login_with.dart
+│   │   │       ├── or_option_auth_widget.dart
+│   │   │       ├── secret_text_field.dart
+│   │   │       ├── social_buttons_icon.dart
+│   │   │       └── sub_text_auth.dart
+│   │   ├── chats
+│   │   │   ├── models
+│   │   │   │   └── chat_last_message.dart
+│   │   │   ├── views
+│   │   │   │   ├── chat_bubble_view.dart
+│   │   │   │   ├── chat_home.dart
+│   │   │   │   └── chats_view.dart
+│   │   │   └── widgets
+│   │   │       ├── chat_container_last_message.dart
+│   │   │       ├── chat_field.dart
+│   │   │       ├── recive_message.dart
+│   │   │       └── sent_message.dart
+│   │   ├── Home
+│   │   │   ├── views
+│   │   │   │   └── home_view.dart
+│   │   │   └── widgets
+│   │   │       ├── create_post_container.dart
+│   │   │       ├── custom_app_bar.dart
+│   │   │       ├── post_container.dart
+│   │   │       └── stories_container.dart
+│   │   ├── Intro
+│   │   │   ├── views
+│   │   │   │   └── intro_view.dart
+│   │   │   └── widgets
+│   │   │       ├── header_text_widget.dart
+│   │   │       └── sub_text_widget.dart
+│   │   ├── Profile
+│   │   │   ├── views
+│   │   │   │   └── profile_view.dart
+│   │   │   └── widgets
+│   │   │       ├── container_setting_option.dart
+│   │   │       └── user_info_column.dart
+│   │   └── Search
+│   │       ├── models
+│   │       │   └── user_search_result.dart
+│   │       ├── views
+│   │       │   └── search_view.dart
+│   │       └── widgets
+│   │           ├── search_bar_name.dart
+│   │           └── user_search_tile.dart
+│   ├── firebase_options.dart
+│   ├── lib.txt
+│   └── main.dart
+├── test
+│   └── widget_test.dart
+├── .flutter-plugins-dependencies
+├── .gitignore
+├── devtools_options.yaml
+├── firbase_chat_app_ui.txt
+├── firebase.json
+├── pubspec.yaml
+└── README.md
+
+=========================================
+
+--- FILE: \lib\core\cubit\theme_cubit.dart | 2026-07-04 04:47 ---
+import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+
+class ThemeCubit extends Cubit<ThemeMode> {
+  ThemeCubit() : super(ThemeMode.light);
+  void toggleTheme() =>
+      emit(state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light);
+}
+
+-----------------------------------------
+
+--- FILE: \lib\core\service\cach_helper.dart | 2026-07-11 22:31 ---
+// ignore_for_file: strict_top_level_inference
+
+import 'dart:convert';
+import 'package:chat_app_ui/features/Auth/model/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class CacheHelper {
+  static SharedPreferences? sharedPreferences;
+  static init() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
+    //Encreption
+    static Future<void>saveUserData(UserModel usermodel, String key) async {
+    String data = jsonEncode(usermodel.tomap());
+    await sharedPreferences!.setString(key, data);
+  }
+    //Decreption
+    UserModel? getData(String key) {
+    String? data = sharedPreferences!.getString(key);
+    if (data != null) {
+      Map<String, dynamic> userMap = jsonDecode(data);
+      return UserModel.fromJson(userMap);
+    }
+    return null;
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\core\utils\theme\dark_theme.dart | 2026-07-13 11:55 ---
+import 'package:chat_app_ui/core/utils/colors.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class AppDarkTheme {
+  static ThemeData theme = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: DarkColors.primaryColor,
+    scaffoldBackgroundColor: DarkColors.backgroundColor,
+
+    // ربط الخط العربي الجديد بالثيم المظلم
+    fontFamily: 'IBMPlexSansArabic',
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: DarkColors.primaryColor,
+        foregroundColor: DarkColors.textColor,
+        elevation: 0,
+        minimumSize: Size(ScreenSize.width / 1.3, ScreenSize.height / 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ScreenSize.width / 30),
+        ),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: const Color(0xff1E1E1E),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      hintStyle: const TextStyle(color: DarkColors.disableColor, fontSize: 14),
+      labelStyle: const TextStyle(color: DarkColors.disableColor, fontSize: 14),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: const BorderSide(color: Color(0xff3A3A3A), width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide:
+            const BorderSide(color: DarkColors.primaryColor, width: 1.7),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.7),
+      ),
+    ),
+    textTheme: const TextTheme(
+      displayLarge: TextStyle(
+          color: DarkColors.textColor,
+          fontSize: 30,
+          fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: DarkColors.textColor),
+      displaySmall: TextStyle(
+          color: DarkColors.textColor,
+          fontSize: 13,
+          fontWeight: FontWeight.normal),
+      headlineLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: DarkColors.primaryColor),
+      headlineMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: DarkColors.disableColor),
+      headlineSmall: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: DarkColors.primaryColor),
+      bodyLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: DarkColors.textColor),
+      bodyMedium: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: DarkColors.textColor),
+      titleMedium: TextStyle(
+          fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black),
+      titleSmall: TextStyle(
+          fontSize: 10, fontWeight: FontWeight.normal, color: Colors.black),
+      bodySmall: TextStyle(fontSize: 9, color: DarkColors.textColor),
+    ),
+  );
+}
+
+-----------------------------------------
+
+--- FILE: \lib\core\utils\theme\light_theme.dart | 2026-07-13 11:54 ---
+import 'package:chat_app_ui/core/utils/colors.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class AppLightTheme {
+  static ThemeData theme = ThemeData(
+    brightness: Brightness.light,
+    primaryColor: LightColors.primaryColor,
+    scaffoldBackgroundColor: LightColors.backgroundColor,
+
+    // ربط الخط العربي الجديد بالثيم
+    fontFamily: 'IBMPlexSansArabic',
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: LightColors.primaryColor,
+        foregroundColor: LightColors.backgroundColor,
+        elevation: 0,
+        minimumSize: Size(ScreenSize.width / 1.3, ScreenSize.height / 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ScreenSize.width / 30),
+        ),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: const BorderSide(color: Color(0xff777777), width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15),
+        borderSide: const BorderSide(
+          color: LightColors.primaryColor,
+          width: 1.7,
+        ),
+      ),
+    ),
+    textTheme: const TextTheme(
+      displayLarge: TextStyle(
+          color: LightColors.textColor,
+          fontSize: 30,
+          fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: LightColors.textColor),
+      displaySmall: TextStyle(
+          color: LightColors.textColor,
+          fontSize: 13,
+          fontWeight: FontWeight.normal),
+      headlineLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: LightColors.primaryColor),
+      headlineMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: LightColors.disableColor),
+      headlineSmall: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: LightColors.primaryColor),
+      bodyLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: LightColors.textColor),
+      bodyMedium: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: LightColors.textColor),
+      titleMedium: TextStyle(
+          fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),
+      titleSmall: TextStyle(
+          fontSize: 10, fontWeight: FontWeight.normal, color: Colors.white),
+      bodySmall: TextStyle(fontSize: 9, color: LightColors.textColor),
+    ),
+  );
+}
+
+-----------------------------------------
+
+--- FILE: \lib\core\utils\colors.dart | 2026-07-13 11:54 ---
+import 'package:flutter/material.dart';
+
+class LightColors {
+  static const Color primaryColor = Color(0xff771F98); // الموف الرسمي النشط
+  static const Color backgroundColor = Color(0xffFFFFFF);
+  static const Color textColor = Color(0xff000000);
+  static const Color disableColor = Colors.grey;
+}
+
+class DarkColors {
+  static const Color primaryColor =
+      Color(0xffB55FE6); // موف مخصص ومريح للثيم المظلم
+  static const Color backgroundColor = Color(0xff121212);
+  static const Color textColor = Color(0xffFFFFFF);
+  static const Color disableColor = Color(0xff8A8A8A);
+}
+
+-----------------------------------------
+
+--- FILE: \lib\core\utils\screen_size.dart | 2026-07-04 04:47 ---
+import 'package:flutter/material.dart';
+
+class ScreenSize {
+  static late double width;
+  static late double height;
+
+  static void init(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\cubit\auth_cubit.dart | 2026-07-15 07:46 ---
+// ignore_for_file: unnecessary_nullable_for_final_variable_declarations, await_only_futures, non_constant_identifier_names, unnecessary_null_comparison, strict_top_level_inference, depend_on_referenced_packages, unused_local_variable
+
+import 'package:bloc/bloc.dart';
+import 'package:chat_app_ui/core/service/cach_helper.dart';
+import 'package:chat_app_ui/features/Auth/model/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:meta/meta.dart';
+part 'auth_state.dart';
+
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit() : super(AuthInitial());
+
+  Future<void> saveUserData(UserModel usermodel) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(usermodel.uid)
+        .set(usermodel.tomap());
+  }
+
+  registerUser(String email, String password, String name) async {
+    emit(AuthLoading());
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      final user = userCredential.user;
+      if (user == null) {
+        emit(AuthError(error: 'User registration failed'));
+      } else {
+        final UserModel userModel = UserModel(
+          uid: user.uid,
+          email: email,
+          name: name,
+          password: password,
+          urlImage: null,
+        );
+        await user.updateDisplayName(name);
+        await user.sendEmailVerification();
+        await saveUserData(userModel);
+        await CacheHelper.saveUserData(userModel,
+            'User'); //دي البتاخد الكاش محليا لحظه التسجيل عشان ما يطرش يسجل تاني
+        emit(AuthSuccess(user: user));
+      }
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(error: handelEorror(e.code)));
+    } catch (e) {
+      emit(AuthError(error: 'حدث خطأ غير متوقع: ${e.toString()}'));
+    }
+  }
+
+  String handelEorror(String error) {
+    if (error.contains('invalid-email')) {
+      return 'Email is invalid';
+    } else if (error.contains('user-disabled')) {
+      return 'User is disabled';
+    } else if (error.contains('user-not-found')) {
+      return 'User not found';
+    } else if (error.contains('wrong-password')) {
+      return 'Wrong password';
+    } else if (error.contains('email-already-in-use')) {
+      return 'Email already in use';
+    } else if (error.contains('operation-not-allowed')) {
+      return 'Operation not allowed';
+    } else if (error.contains('weak-password')) {
+      return 'Weak password';
+    } else {
+      return 'An undefined Error happened.';
+    }
+  }
+
+  loginUser({required String email, required String password}) async {
+    emit(AuthLoading());
+    final UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    final user = userCredential.user;
+    try {
+      if (user == null) {
+        emit(AuthError(error: 'User login failed'));
+      } else {
+        user.reload();
+        final User? current = FirebaseAuth.instance.currentUser;
+        if (!current!.emailVerified) {
+          emit((AuthEmailNotVerificationSent()));
+          return;
+        }
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (!userDoc.exists) {
+          emit(AuthError(error: ''));
+          return;
+        }
+        if (userDoc.data() == null) {
+          emit(AuthError(error: ''));
+          return;
+        }
+        UserModel userModel = UserModel.fromJson(
+          userDoc.data() as Map<String, dynamic>,
+        );
+
+        await CacheHelper.saveUserData(userModel, 'User');
+        emit(AuthSuccess(user: current));
+      }
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(error: handelEorror(e.code)));
+    }
+  }
+
+  getUserorCreate(User? user) async {
+    final DocumentReference ref =
+        FirebaseFirestore.instance.collection('user').doc(user!.uid);
+    final DocumentSnapshot userDoc = await ref.get();
+    if (userDoc.exists) {
+      return UserModel.fromJson(userDoc.data() as Map<String, dynamic>);
+    }
+    UserModel userModel = UserModel(
+        email: user.email!,
+        password: '',
+        name: user.displayName!,
+        uid: user.uid);
+    await ref.set(userModel.tomap());
+    return userModel;
+  }
+
+  bool isGoogleInit = false;
+  initGoogle() async {
+    if (isGoogleInit) {
+      GoogleSignIn.instance.initialize();
+      isGoogleInit = true;
+    }
+  }
+
+  LoginWithGoogle() async {
+    emit(AuthLoading());
+    try {
+      await initGoogle();
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn.instance.authenticate();
+
+      if (googleUser == null) {
+        emit(AuthError(error: 'تم إلغاء عملية تسجيل الدخول.'));
+        return;
+      }
+
+      GoogleSignInAuthentication googleSignInAuthentication =
+          googleUser.authentication;
+
+      final OAuthCredential userAuthentication =
+          await GoogleAuthProvider.credential(
+              idToken: googleSignInAuthentication.idToken);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(userAuthentication);
+      final User? user = userCredential.user;
+      if (googleUser == null) {
+        emit(AuthError(error: ''));
+        return;
+      }
+      final UserModel userModel = await getUserorCreate(user);
+
+      await CacheHelper.saveUserData(userModel, 'user');
+
+      emit(AuthSuccess(user: user));
+    } on Exception catch (e) {
+      emit(AuthError(error: e.toString()));
+    }
+  }
+
+
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\cubit\auth_state.dart | 2026-07-14 16:36 ---
+part of 'auth_cubit.dart';
+
+@immutable
+sealed class AuthState {}
+
+final class AuthInitial extends AuthState {}
+
+final class AuthLoading extends AuthState {}
+
+final class AuthEmailNotVerificationSent extends AuthState {}
+
+
+final class AuthSuccess extends AuthState {
+  final User? user;
+
+  AuthSuccess({required this.user});
+}
+
+final class AuthError extends AuthState {
+  final String error;
+
+  AuthError({required this.error});
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\model\user_model.dart | 2026-07-04 21:00 ---
+// ignore_for_file: strict_top_level_inference
+
+class UserModel {
+  final String password;
+  final String uid;
+  final String email;
+  final String name;
+  final String? urlImage;
+
+  UserModel({
+    required this.uid,
+    required this.email,
+    required this.name,
+    required this.password,
+    this.urlImage,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      uid: json['uid'],
+      email: json['email'],
+      name: json['name'],
+      password: json['password'],
+      urlImage: json['urlImage'],
+    );
+  }
+
+  tomap() {
+    return {
+      'uid': uid,
+      'email': email,
+      'name': name,
+      'password': password,
+      'urlImage': urlImage,
+    };
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\views\login_view.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Auth/cubit/auth_cubit.dart';
+import 'package:chat_app_ui/features/Auth/views/sign_up_view.dart';
+import 'package:chat_app_ui/features/Auth/widgets/auth_button.dart';
+import 'package:chat_app_ui/features/Auth/widgets/forget_button.dart';
+import 'package:chat_app_ui/features/Auth/widgets/header_text_auth.dart';
+import 'package:chat_app_ui/features/Auth/widgets/normal_text_field.dart';
+import 'package:chat_app_ui/features/Auth/widgets/or_login_with.dart';
+import 'package:chat_app_ui/features/Auth/widgets/or_option_auth_widget.dart';
+import 'package:chat_app_ui/features/Auth/widgets/secret_text_field.dart';
+import 'package:chat_app_ui/features/Auth/widgets/social_buttons_icon.dart';
+import 'package:chat_app_ui/features/Auth/widgets/sub_text_auth.dart';
+import 'package:chat_app_ui/features/Home/views/home_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+  static const routeName = 'LoginView';
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  TextEditingController emailIN = TextEditingController();
+  TextEditingController passwordIN = TextEditingController();
+
+  GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          Navigator.pushReplacementNamed(context, HomeView.routeName);
+        } else if (state is AuthError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: ScreenSize.width / 20,
+                right: ScreenSize.width / 20,
+                top: ScreenSize.height / 8,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.centerRight,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const HeaderTextAuthWidget(txt: "Hello, Welcome Back"),
+                          SizedBox(height: ScreenSize.height / 100),
+                          const SubTextAuthWidget(
+                            txt:
+                                "Happy to see you again, to use your account please login first.",
+                          ),
+                          SizedBox(height: ScreenSize.height / 20),
+                          NormalTextField(
+                            formKey: emailFormKey,
+                            controller: emailIN,
+                            label: "Email Address",
+                            textInputType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(height: ScreenSize.height / 30),
+                        ],
+                      ),
+                      Positioned(
+                        right: -ScreenSize.width / 30,
+                        top: -ScreenSize.height / 25,
+                        child: Image.asset(
+                          "assets/images/avatar.png",
+                          width: ScreenSize.width / 4,
+                          height: ScreenSize.height / 4,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SecretTextField(
+                    label: "Password",
+                    textInputType: TextInputType.visiblePassword,
+                    controller: passwordIN,
+                    formKey: passwordFormKey,
+                  ),
+                  SizedBox(height: ScreenSize.height / 40),
+                  ForgetButtonWidget(onTap: () {}),
+                  SizedBox(height: ScreenSize.height / 20),
+                  AuthButtonWidget(
+                    title: "Login",
+                    onTap: () {
+                      if (emailFormKey.currentState!.validate() &&
+                          passwordFormKey.currentState!.validate()) {
+                        context.read<AuthCubit>().loginUser(
+                              email: emailIN.text,
+                              password: passwordIN.text,
+                            );
+                      }
+                    },
+                  ),
+                  SizedBox(height: ScreenSize.height / 30),
+                  const OrLoginWithWidget(),
+                  SizedBox(height: ScreenSize.height / 70),
+                  SocialButtonsIconWidget(
+                    onTapFacebook: () {},
+                    onTapGoogle: () {
+                      context.read<AuthCubit>().LoginWithGoogle();
+                    },
+                  ),
+                  SizedBox(height: ScreenSize.height / 30),
+                  OrOptionAuthWidget(
+                    question: "Don't have an account? ",
+                    action: "Sign Up",
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        SignUpView.routeName,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\views\sign_up_view.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Auth/cubit/auth_cubit.dart';
+import 'package:chat_app_ui/features/Auth/views/login_view.dart';
+import 'package:chat_app_ui/features/Auth/widgets/auth_button.dart';
+import 'package:chat_app_ui/features/Auth/widgets/header_text_auth.dart';
+import 'package:chat_app_ui/features/Auth/widgets/normal_text_field.dart';
+import 'package:chat_app_ui/features/Auth/widgets/or_option_auth_widget.dart';
+import 'package:chat_app_ui/features/Auth/widgets/secret_text_field.dart';
+import 'package:chat_app_ui/features/Auth/widgets/sub_text_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class SignUpView extends StatefulWidget {
+  const SignUpView({super.key});
+  static const routeName = "SignUpView";
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  TextEditingController emailUP = TextEditingController();
+  TextEditingController nameUp = TextEditingController();
+  TextEditingController passwordUp = TextEditingController();
+
+  final emailFormKey = GlobalKey<FormState>();
+  final nameFormKey = GlobalKey<FormState>();
+  final passwordFormKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          Navigator.pushReplacementNamed(context, LoginView.routeName);
+        } else if (state is AuthError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+      },
+
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: Padding(
+            padding: EdgeInsets.only(
+              left: ScreenSize.width / 20,
+              right: ScreenSize.width / 20,
+              top: ScreenSize.height / 8,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.centerRight,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const HeaderTextAuthWidget(txt: "Hello, Let’s Get Started"),
+                          SizedBox(height: ScreenSize.height / 100),
+                          const SubTextAuthWidget(
+                            txt: "Create your account and join us today.",
+                          ),
+                          SizedBox(height: ScreenSize.height / 20),
+                          NormalTextField(
+                            formKey: nameFormKey,
+                            controller: nameUp,
+                            label: "Full Name",
+                            textInputType: TextInputType.name,
+                          ),
+                          SizedBox(height: ScreenSize.height / 30),
+                        ],
+                      ),
+                      Positioned(
+                        right: -ScreenSize.width / 30,
+                        top: -ScreenSize.height / 17,
+                        child: Image.asset(
+                          "assets/images/avatar.png",
+                          width: ScreenSize.width / 4,
+                          height: ScreenSize.height / 4,
+                        ),
+                      ),
+                    ],
+                  ),
+              
+                  NormalTextField(
+                    formKey: emailFormKey,
+                    controller: emailUP,
+                    label: "Email Address",
+                    textInputType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: ScreenSize.height / 30),
+              
+                  SecretTextField(
+                    label: "Password",
+                    textInputType: TextInputType.visiblePassword,
+                    controller: passwordUp,
+                    formKey: passwordFormKey,
+                  ),
+                  SizedBox(height: ScreenSize.height / 20),
+              
+                  AuthButtonWidget(
+                    title: "Sign Up",
+                    onTap: () {
+                      context.read<AuthCubit>().registerUser(
+                        emailUP.text,
+                        passwordUp.text,
+                        nameUp.text,
+                      );
+                    },
+                  ),
+                  SizedBox(height: ScreenSize.height / 30),
+                  OrOptionAuthWidget(
+                    question: "Already have an account? ",
+                    action: "Login",
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        LoginView.routeName,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\auth_button.dart | 2026-07-14 15:21 ---
+import 'package:flutter/material.dart';
+
+class AuthButtonWidget extends StatelessWidget {
+  const AuthButtonWidget({super.key, required this.title, required this.onTap});
+  final String title;
+  final void Function() onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: onTap,
+          style: Theme.of(context).elevatedButtonTheme.style,
+          child: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\forget_button.dart | 2026-07-14 15:21 ---
+import 'package:flutter/material.dart';
+
+class ForgetButtonWidget extends StatelessWidget {
+  const ForgetButtonWidget({super.key, required this.onTap});
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: const Text(
+            "Forgot Password",
+            style: TextStyle(fontSize: 10, color: Color(0xff993F3F)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\header_text_auth.dart | 2026-07-04 04:47 ---
+import 'package:flutter/material.dart';
+
+class HeaderTextAuthWidget extends StatelessWidget {
+  const HeaderTextAuthWidget({super.key, required this.txt});
+  final String txt;
+  @override
+  Widget build(BuildContext context) {
+    return Text(txt, style: Theme.of(context).textTheme.displayMedium);
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\normal_text_field.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/utils/colors.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class NormalTextField extends StatelessWidget {
+  const NormalTextField({
+    super.key,
+    required this.label,
+    required this.textInputType,
+    required this.controller,
+    required this.formKey,
+  });
+  final String label;
+  final TextInputType textInputType;
+  final TextEditingController controller;
+  final GlobalKey<FormState> formKey;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(ScreenSize.height / 80),
+          child: Text(label, style: Theme.of(context).textTheme.displaySmall),
+        ),
+        Form(
+          key: formKey,
+          child: TextFormField(
+            controller: controller,
+            cursorColor: LightColors.primaryColor,
+            style: Theme.of(context).textTheme.displaySmall,
+            keyboardType: textInputType,
+            decoration: const InputDecoration(),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Must be enter the $label';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\or_login_with.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class OrLoginWithWidget extends StatelessWidget {
+  const OrLoginWithWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: ScreenSize.width / 4,
+          child: Divider(color: Theme.of(context).primaryColor, thickness: 0.7),
+        ),
+        Text("Or Login with", style: Theme.of(context).textTheme.displaySmall),
+        SizedBox(
+          width: ScreenSize.width / 4,
+          child: Divider(color: Theme.of(context).primaryColor, thickness: 0.7),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\or_option_auth_widget.dart | 2026-07-04 04:47 ---
+import 'package:flutter/material.dart';
+
+class OrOptionAuthWidget extends StatelessWidget {
+  const OrOptionAuthWidget({
+    super.key,
+    required this.question,
+    required this.action,
+    required this.onTap,
+  });
+  final String question;
+  final String action;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(question, style: Theme.of(context).textTheme.displaySmall),
+        GestureDetector(
+          onTap: onTap,
+          child: Text(
+            action,
+            style: Theme.of(context).textTheme.displaySmall!.copyWith(
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\secret_text_field.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/colors.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class SecretTextField extends StatefulWidget {
+  const SecretTextField({
+    super.key,
+    required this.label,
+    required this.textInputType,
+    required this.controller,
+    required this.formKey,
+  });
+  final String label;
+  final TextInputType textInputType;
+  final TextEditingController controller;
+  final GlobalKey<FormState> formKey;
+  @override
+  State<SecretTextField> createState() => _SecretTextFieldState();
+}
+
+class _SecretTextFieldState extends State<SecretTextField> {
+  bool obscureText = true;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(ScreenSize.height / 80),
+          child: Text(
+            widget.label,
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
+        ),
+        Form(
+          key: widget.formKey,
+          child: TextFormField(
+            obscureText: obscureText,
+            controller: widget.controller,
+            cursorColor: LightColors.primaryColor,
+            style: Theme.of(context).textTheme.displaySmall,
+            keyboardType: widget.textInputType,
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Theme.of(context).primaryColor,
+                ),
+                onPressed: () {
+                  setState(() {
+                    obscureText = !obscureText;
+                  });
+                },
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Must be enter the ${widget.label}';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\social_buttons_icon.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class SocialButtonsIconWidget extends StatelessWidget {
+  const SocialButtonsIconWidget({
+    super.key,
+    required this.onTapFacebook,
+    required this.onTapGoogle,
+  });
+  final VoidCallback onTapFacebook;
+  final VoidCallback onTapGoogle;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: onTapFacebook,
+          child: Image.asset(
+            "assets/images/facebook.png",
+            height: ScreenSize.height / 20,
+            width: ScreenSize.height / 20,
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(width: ScreenSize.width / 20),
+        GestureDetector(
+          onTap: onTapGoogle,
+          child: Image.asset(
+            "assets/images/google.png",
+            height: ScreenSize.height / 25,
+            width: ScreenSize.height / 25,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Auth\widgets\sub_text_auth.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class SubTextAuthWidget extends StatelessWidget {
+  const SubTextAuthWidget({super.key, required this.txt});
+  final String txt;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: ScreenSize.width / 1.5,
+      child: Text(txt, style: Theme.of(context).textTheme.displaySmall),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\models\chat_last_message.dart | 2026-07-04 04:47 ---
+class ChatLastMessage {
+  final String image;
+  final String name;
+  final String lastMessage;
+  final String time;
+  final bool isread;
+
+  ChatLastMessage({
+    required this.image,
+    required this.name,
+    required this.lastMessage,
+    required this.time,
+    required this.isread,
+  });
+
+  factory ChatLastMessage.fromJson(Map<String, dynamic> json) {
+    return ChatLastMessage(
+      image: json['image'],
+      name: json['name'],
+      lastMessage: json['lastMessage'],
+      time: json['time'],
+      isread: json['isread'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'image': image,
+      'name': name,
+      'lastMessage': lastMessage,
+      'time': time,
+      'isread': isread,
+    };
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\views\chat_bubble_view.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/chats/models/chat_last_message.dart';
+import 'package:chat_app_ui/features/chats/widgets/chat_field.dart';
+import 'package:chat_app_ui/features/chats/widgets/recive_message.dart';
+import 'package:chat_app_ui/features/chats/widgets/sent_message.dart';
+import 'package:flutter/material.dart';
+
+class ChatBubbleView extends StatefulWidget {
+  const ChatBubbleView({super.key});
+  static const routeName = 'ChatBubbleView';
+  @override
+  State<ChatBubbleView> createState() => _ChatBubbleViewState();
+}
+
+class _ChatBubbleViewState extends State<ChatBubbleView> {
+  TextEditingController controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    final chatLastMessage =
+        ModalRoute.of(context)!.settings.arguments! as ChatLastMessage;
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: ScreenSize.width / 15,
+              backgroundImage: NetworkImage(chatLastMessage.image),
+            ),
+            SizedBox(width: ScreenSize.width / 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  chatLastMessage.name,
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+                Text(
+                  "Online",
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          const Expanded(
+            child: Column(
+              children: [
+                SentMessageWidget(
+                  text:
+                      "Thank you so much for your time and support. I am looking forward to your reply.",
+                  time: "10:00 AM",
+                  isread: true,
+                ),
+                ReciveMessageWidget(
+                  text:
+                      "Thank you so much for your time and support. I am looking forward to your reply.",
+                  time: "10:00 AM",
+                ),
+              ],
+            ),
+          ),
+          ChatField(controller: controller, onSend: () {}),
+        ],
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\views\chat_home.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Home/views/home_view.dart';
+import 'package:chat_app_ui/features/chats/views/chats_view.dart';
+import 'package:chat_app_ui/features/Profile/views/profile_view.dart';
+import 'package:chat_app_ui/features/Search/views/search_view.dart';
+import 'package:flutter/material.dart';
+
+class ChatHome extends StatefulWidget {
+  const ChatHome({super.key});
+  static const routeName = "ChatHome";
+  @override
+  State<ChatHome> createState() => _ChatHomeState();
+}
+
+class _ChatHomeState extends State<ChatHome> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, HomeView.routeName);
+            },
+          ),
+          title: Text(
+            "Easy Chat",
+            style: Theme.of(context).textTheme.displayMedium,
+          ),
+        ),
+        body: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: TabBar(
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                splashFactory: NoSplash.splashFactory,
+                isScrollable: true,
+                //labelColor: Theme.of(context).primaryColor,
+                labelStyle: Theme.of(context).textTheme.headlineLarge,
+                unselectedLabelStyle: Theme.of(
+                  context,
+                ).textTheme.headlineMedium,
+                labelPadding: EdgeInsets.symmetric(
+                  horizontal: ScreenSize.width / 10,
+                ),
+                indicatorColor: Theme.of(context).primaryColor,
+                indicatorWeight: 2,
+                indicatorSize: TabBarIndicatorSize.label,
+                dividerColor: Colors.transparent,
+                tabAlignment: TabAlignment.center,
+                tabs: const [
+                  Tab(text: 'Chats'),
+                  Tab(text: 'Search'),
+                  Tab(text: 'Profile'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Expanded(
+              child: TabBarView(
+                children: [
+                  ChatsView(),
+                  SearchView(isInTab: true),
+                  ProfileView()
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\views\chats_view.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/chats/models/chat_last_message.dart';
+import 'package:chat_app_ui/features/chats/views/chat_bubble_view.dart';
+import 'package:chat_app_ui/features/chats/widgets/chat_container_last_message.dart';
+import 'package:flutter/material.dart';
+
+class ChatsView extends StatefulWidget {
+  const ChatsView({super.key});
+  static const routeName = 'ChatsView';
+  @override
+  State<ChatsView> createState() => _ChatsViewState();
+}
+
+class _ChatsViewState extends State<ChatsView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Padding(
+        padding: EdgeInsets.only(
+          left: ScreenSize.width / 20,
+          right: ScreenSize.width / 20,
+        ),
+        child: Column(
+          children: [
+            ChatContainerLastMessage(
+              chatLastMessage: chatLastMessages[0],
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  ChatBubbleView.routeName,
+                  arguments: chatLastMessages[0],
+                );
+              },
+            ),
+            ChatContainerLastMessage(
+              chatLastMessage: chatLastMessages[1],
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  ChatBubbleView.routeName,
+                  arguments: chatLastMessages[1],
+                );
+              },
+            ),
+            ChatContainerLastMessage(
+              chatLastMessage: chatLastMessages[2],
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  ChatBubbleView.routeName,
+                  arguments: chatLastMessages[2],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+List<ChatLastMessage> chatLastMessages = [
+  ChatLastMessage(
+    image:
+        "https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&iar=0&w=600&hash=833D605FDB6AC3C2D2915F6BF8B4ADA4",
+    name: "John Doe",
+    lastMessage: "Hello, How are you ?",
+    time: "12:00 PM",
+    isread: true,
+  ),
+  ChatLastMessage(
+    image:
+        "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
+    name: "Harry Potter",
+    lastMessage: "Let's go to Hogwarts !",
+    time: "12:09 PM",
+    isread: false,
+  ),
+  ChatLastMessage(
+    image:
+        "https://www.fluentu.com/blog/wp-content/uploads/site//4/african-american-young-mom-with-curly-hair-in-stylish-outfit-feeling-grateful-and-happy-receiving-surprise-gift-from-kid-holding-palms-on-heart-smiling.jpg",
+    name: "Laila Ahmed",
+    lastMessage: "Go to Easy Learn Academy !",
+    time: "02:56 AM",
+    isread: false,
+  ),
+];
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\widgets\chat_container_last_message.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/chats/models/chat_last_message.dart';
+import 'package:flutter/material.dart';
+
+class ChatContainerLastMessage extends StatelessWidget {
+  const ChatContainerLastMessage({
+    super.key,
+    required this.chatLastMessage,
+    required this.onTap,
+  });
+  final ChatLastMessage chatLastMessage;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: ScreenSize.height / 50),
+      width: double.infinity,
+      height: ScreenSize.height / 12,
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+        borderRadius: BorderRadius.circular(ScreenSize.width / 30),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        leading: CircleAvatar(
+          radius: ScreenSize.width / 15,
+          backgroundImage: NetworkImage(chatLastMessage.image),
+        ),
+        title: Text(
+          chatLastMessage.name,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        subtitle: Row(
+          children: [
+            Icon(
+              chatLastMessage.isread
+                  ? Icons.check_circle
+                  : Icons.check_circle_outline,
+              color: Colors.green,
+              size: ScreenSize.width / 20,
+            ),
+            const SizedBox(width: 5),
+            SizedBox(
+              width: ScreenSize.width / 3,
+              child: Text(
+                chatLastMessage.lastMessage,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+        trailing: Text(
+          chatLastMessage.time,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\widgets\chat_field.dart | 2026-07-04 20:47 ---
+// ignore_for_file: deprecated_member_use
+
+import 'package:chat_app_ui/core/cubit/theme_cubit.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class ChatField extends StatelessWidget {
+  const ChatField({super.key, required this.controller, required this.onSend});
+  final TextEditingController controller;
+  final VoidCallback onSend;
+  @override
+  Widget build(BuildContext context) {
+    bool isDark = context.select(
+      (ThemeCubit cubit) => cubit.state == ThemeMode.dark,
+    );
+    return Container(
+      height: ScreenSize.height / 7,
+      padding: const EdgeInsets.fromLTRB(28, 20, 18, 10),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xff1E1E1E) : const Color(0xffF8F8F8),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(18),
+          topRight: Radius.circular(18),
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.white.withOpacity(0.15)
+                : Colors.black.withOpacity(0.15),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  cursorColor: Colors.grey,
+                  decoration: InputDecoration(
+                    hintText: 'Type here...',
+                    hintStyle: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 16,
+                    ),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+
+              IconButton(
+                onPressed: onSend,
+                icon: Icon(
+                  Icons.send,
+                  color: Theme.of(context).primaryColor,
+                  size: ScreenSize.width / 15,
+                ),
+              ),
+            ],
+          ),
+
+          const Spacer(),
+
+          Container(
+            width: 90,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\widgets\recive_message.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class ReciveMessageWidget extends StatelessWidget {
+  const ReciveMessageWidget({
+    super.key,
+    required this.text,
+    required this.time,
+  });
+  final String text;
+  final String time;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: ScreenSize.height / 50,
+        left: ScreenSize.width / 50,
+        right: ScreenSize.width / 3,
+      ),
+      padding: EdgeInsets.all(ScreenSize.width / 50),
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(ScreenSize.width / 30),
+          bottomRight: Radius.circular(ScreenSize.width / 30),
+          bottomLeft: Radius.circular(ScreenSize.width / 30),
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(text, style: Theme.of(context).textTheme.bodyMedium),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(time, style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\chats\widgets\sent_message.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class SentMessageWidget extends StatelessWidget {
+  const SentMessageWidget({
+    super.key,
+    required this.text,
+    required this.time,
+    required this.isread,
+  });
+  final String text;
+  final String time;
+  final bool isread;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: ScreenSize.height / 50,
+        left: ScreenSize.width / 3,
+        right: ScreenSize.width / 50,
+      ),
+      padding: EdgeInsets.all(ScreenSize.width / 50),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(ScreenSize.width / 30),
+          bottomRight: Radius.circular(ScreenSize.width / 30),
+          bottomLeft: Radius.circular(ScreenSize.width / 30),
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(text, style: Theme.of(context).textTheme.titleMedium),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(time, style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(width: 5),
+              Icon(
+                isread ? Icons.done_all : Icons.done,
+                color: isread ? Colors.green : Colors.grey,
+                size: ScreenSize.width / 20,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Home\views\home_view.dart | 2026-07-14 11:39 ---
+import 'package:chat_app_ui/features/Profile/views/profile_view.dart';
+import 'package:flutter/material.dart';
+import 'package:chat_app_ui/features/chats/views/chat_home.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/create_post_container.dart';
+import '../widgets/stories_container.dart';
+import '../widgets/post_container.dart';
+
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+  static const routeName = 'HomeView';
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 6, //
+      child: Scaffold(
+        backgroundColor: Colors.grey[200],
+        appBar: CustomHomeAppBar(
+          onMessengerPressed: () {
+            Navigator.pushReplacementNamed(context, ChatHome.routeName);
+          },
+        ),
+        body: TabBarView(
+          children: [
+            _buildHomeFeed(),
+            const Center(child: Text('Friends Screen')),
+            const Center(child: Text('Watch Screen')),
+            const Center(child: Text('Marketplace Screen')),
+            const Center(child: Text('Notifications Screen')),
+            const ProfileView(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHomeFeed() {
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      children: const [
+        CreatePostContainer(), //
+        SizedBox(height: 8), //
+        StoriesContainer(), //
+        SizedBox(height: 8), //
+        PostContainer(
+          userName: 'Taha Mohamad', //
+          time: '5m', //
+          profileImage:
+              'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', //
+          postText:
+              'الحمد لله، شغال على تطوير تطبيق جديد باستخدام Flutter و Firebase! 🚀🔥 #programming #flutter', //
+          postImage:
+              'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', //
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Home\widgets\create_post_container.dart | 2026-07-12 12:50 ---
+import 'package:flutter/material.dart';
+
+class CreatePostContainer extends StatefulWidget {
+  const CreatePostContainer({super.key});
+
+  @override
+  State<CreatePostContainer> createState() => _CreatePostContainerState();
+}
+
+class _CreatePostContainerState extends State<CreatePostContainer> {
+  final TextEditingController _postController = TextEditingController();
+
+  @override
+  void dispose() {
+    _postController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          // أيقونة الصور على اليسار
+          IconButton(
+            icon: const Icon(Icons.photo_library, color: Colors.grey, size: 28),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 8),
+          // حقل الكتابة المستدير
+          Expanded(
+            child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(color: Colors.grey.shade300, width: 1),
+              ),
+              child: TextField(
+                controller: _postController,
+                textAlign: TextAlign.right, // يدعم الكتابة باللغة العربية
+                decoration: InputDecoration(
+                  hintText: 'بم تفكر؟',
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 15,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // صورة الحساب الشخصي (Spider-Man)
+          const CircleAvatar(
+            radius: 20,
+            backgroundImage: NetworkImage(
+              'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+            ), // استبدلها بصورة سبايدر مان لاحقاً
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Home\widgets\custom_app_bar.dart | 2026-07-14 12:03 ---
+import 'package:chat_app_ui/features/Search/views/search_view.dart';
+import 'package:flutter/material.dart';
+
+class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomHomeAppBar({super.key, required this.onMessengerPressed});
+
+  final VoidCallback onMessengerPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color currentThemeColor = Theme.of(context).primaryColor;
+
+    return AppBar(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      elevation: 0.5,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Image.asset(
+            'assets/images/splash icon.png',
+            height: 35,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'chatapp',
+            style: TextStyle(
+              color: currentThemeColor,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              letterSpacing: -0.5,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        _buildCircleButton(Icons.search, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const SearchView(
+                  isInTab: false), 
+            ),
+          );
+        }),
+        _buildCircleButton(Icons.messenger, onMessengerPressed),
+      ],
+      bottom: TabBar(
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(
+            color: currentThemeColor,
+            width: 3.5,
+          ),
+          insets: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelColor: currentThemeColor,
+        unselectedLabelColor: Colors.black54,
+        enableFeedback: true,
+        tabs: const [
+          Tab(icon: Icon(Icons.home_outlined, size: 28)),
+          Tab(icon: Icon(Icons.people_outline, size: 28)),
+          Tab(icon: Icon(Icons.ondemand_video, size: 28)),
+          Tab(icon: Icon(Icons.storefront, size: 28)),
+          Tab(icon: Icon(Icons.notifications_none, size: 28)),
+          Tab(icon: Icon(Icons.menu, size: 28)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCircleButton(IconData icon, VoidCallback onPressed) {
+    return Container(
+      margin: const EdgeInsets.all(6.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: Icon(icon),
+        iconSize: 22,
+        color: Colors.black,
+        onPressed: onPressed,
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 48.0);
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Home\widgets\post_container.dart | 2026-07-12 12:43 ---
+import 'package:flutter/material.dart';
+
+class PostContainer extends StatelessWidget {
+  final String userName;
+  final String time;
+  final String profileImage;
+  final String postText;
+  final String? postImage;
+
+  const PostContainer({
+    super.key,
+    required this.userName,
+    required this.time,
+    required this.profileImage,
+    required this.postText,
+    this.postImage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(profileImage),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(userName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Row(
+                        children: [
+                          Text('$time • ', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                          Icon(Icons.public, color: Colors.grey[600], size: 12),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.more_horiz),
+                  onPressed: () {},
+                )
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(postText, style: const TextStyle(fontSize: 15)),
+          ),
+          if (postImage != null) ...[
+            const SizedBox(height: 6),
+            Image.network(postImage!, fit: BoxFit.cover, width: double.infinity, height: 250),
+          ],
+          const SizedBox(height: 8),
+          const Divider(height: 10, thickness: 0.5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildPostActionButton(Icons.thumb_up_outlined, 'Like', () {}),
+              _buildPostActionButton(Icons.mode_comment_outlined, 'Comment', () {}),
+              _buildPostActionButton(Icons.share_outlined, 'Share', () {}),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostActionButton(IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.grey, size: 20),
+            const SizedBox(width: 4),
+            Text(label, style: const TextStyle(color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+-----------------------------------------
+
+--- FILE: \lib\features\Home\widgets\stories_container.dart | 2026-07-12 12:43 ---
+import 'package:flutter/material.dart';
+
+class StoriesContainer extends StatelessWidget {
+  const StoriesContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 180,
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            width: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: const DecorationImage(
+                image: NetworkImage('https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xff1877F2), width: 2),
+                    ),
+                    child: const CircleAvatar(
+                      radius: 16,
+                      backgroundImage: NetworkImage('https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                    ),
+                  ),
+                ),
+                const Positioned(
+                  bottom: 8,
+                  left: 8,
+                  right: 8,
+                  child: Text(
+                    'User Story',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+-----------------------------------------
+
+--- FILE: \lib\features\Intro\views\intro_view.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Auth/views/login_view.dart';
+import 'package:chat_app_ui/features/Intro/widgets/header_text_widget.dart';
+import 'package:chat_app_ui/features/Intro/widgets/sub_text_widget.dart';
+import 'package:flutter/material.dart';
+
+class IntroView extends StatelessWidget {
+  const IntroView({super.key});
+  static const routeName = "IntroView";
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const HeaderTextWidget(),
+            const SubTextWidget(),
+            Image.asset("assets/images/intro.png"),
+            SizedBox(height: ScreenSize.height / 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, LoginView.routeName);
+              },
+              style: Theme.of(context).elevatedButtonTheme.style,
+              child: const Text(
+                "Get Started",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Intro\widgets\header_text_widget.dart | 2026-07-04 07:16 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class HeaderTextWidget extends StatelessWidget {
+  const HeaderTextWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: ScreenSize.width / 8,
+        top: ScreenSize.height / 10,
+        bottom: ScreenSize.height / 30,
+      ),
+      child: Center(
+        child: Text(
+          "Get Closer To EveryOne",
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Intro\widgets\sub_text_widget.dart | 2026-07-04 07:15 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class SubTextWidget extends StatelessWidget {
+  const SubTextWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: ScreenSize.width / 12,
+        right: ScreenSize.width / 5,
+        bottom: ScreenSize.height / 30,
+      ),
+      child: Text(
+        "Helps you to contact everyone with just easy way",
+        style: Theme.of(context).textTheme.displaySmall,
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Profile\views\profile_view.dart | 2026-07-14 15:21 ---
+import 'package:chat_app_ui/core/cubit/theme_cubit.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Auth/views/login_view.dart';
+import 'package:chat_app_ui/features/Profile/widgets/container_setting_option.dart';
+import 'package:chat_app_ui/features/Profile/widgets/user_info_column.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class ProfileView extends StatefulWidget {
+  const ProfileView({super.key});
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  Widget build(BuildContext context) {
+    bool isDark = context.select(
+      (ThemeCubit cubit) => cubit.state == ThemeMode.dark,
+    );
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Padding(
+        padding: EdgeInsets.only(
+          top: ScreenSize.height / 50,
+          left: ScreenSize.width / 20,
+          right: ScreenSize.width / 20,
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CircleAvatar(
+                  radius: ScreenSize.width / 6,
+                  backgroundImage: const NetworkImage(
+                    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  ),
+                ),
+                const UserInfoColumnWidget(
+                  name: "Mahmoud Mohamed Talal",
+                  email: "almasryhouda1234@gmail.com",
+                ),
+              ],
+            ),
+            SizedBox(height: ScreenSize.height / 20),
+            ContainerSettingOptionWidget(
+              text: "Edit Your Profile",
+              icon: Icons.edit_road,
+              onTap: () {},
+            ),
+            SizedBox(height: ScreenSize.height / 20),
+            ContainerSettingOptionWidget(
+              text: "Change Your Password",
+              icon: Icons.password,
+              onTap: () {},
+            ),
+            SizedBox(height: ScreenSize.height / 20),
+            ContainerSettingOptionWidget(
+              text: "Theme Mode",
+              icon: isDark
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
+              onTap: () {
+                context.read<ThemeCubit>().toggleTheme();
+              },
+            ),
+            SizedBox(height: ScreenSize.height / 20),
+            ContainerSettingOptionWidget(
+              text: "Log Out",
+              icon: Icons.logout_rounded,
+              onTap: () {
+                Navigator.pushReplacementNamed(context, LoginView.routeName);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Profile\widgets\container_setting_option.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class ContainerSettingOptionWidget extends StatelessWidget {
+  const ContainerSettingOptionWidget({
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.onTap,
+  });
+  final String text;
+  final IconData icon;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(ScreenSize.width / 30),
+        width: ScreenSize.width,
+        height: ScreenSize.height / 15,
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+          borderRadius: BorderRadius.circular(ScreenSize.width / 30),
+        ),
+        child: Row(
+          children: [
+            Text(text, style: Theme.of(context).textTheme.bodyLarge),
+            const Spacer(),
+            Icon(
+              icon,
+              color: Theme.of(context).primaryColor,
+              size: ScreenSize.width / 15,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Profile\widgets\user_info_column.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:flutter/material.dart';
+
+class UserInfoColumnWidget extends StatelessWidget {
+  const UserInfoColumnWidget({
+    super.key,
+    required this.name,
+    required this.email,
+  });
+  final String name;
+  final String email;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: ScreenSize.width / 2,
+          padding: EdgeInsets.all(ScreenSize.width / 50),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+            borderRadius: BorderRadius.circular(ScreenSize.width / 30),
+          ),
+          child: Text(
+            name,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+        ),
+        SizedBox(height: ScreenSize.height / 50),
+        SizedBox(
+          width: ScreenSize.width / 2,
+          child: Text(
+            email,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Search\models\user_search_result.dart | 2026-07-04 04:47 ---
+class UserSearchResult {
+  final String name;
+  final String image;
+
+  UserSearchResult({required this.name, required this.image});
+
+  factory UserSearchResult.fromJson(Map<String, dynamic> json) {
+    return UserSearchResult(name: json['name'], image: json['image']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, 'image': image};
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Search\views\search_view.dart | 2026-07-14 12:04 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Search/models/user_search_result.dart';
+import 'package:chat_app_ui/features/Search/widgets/search_bar_name.dart';
+import 'package:chat_app_ui/features/Search/widgets/user_search_tile.dart';
+import 'package:flutter/material.dart';
+
+class SearchView extends StatefulWidget {
+  final bool isInTab;
+  const SearchView({super.key, this.isInTab = false});
+  static const routeName = 'SearchView';
+
+  @override
+  State<SearchView> createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  final TextEditingController controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: widget.isInTab
+          ? null
+          : AppBar(
+              title: const Text('Search'),
+            ),
+      body: Padding(
+        padding: EdgeInsets.only(
+          left: ScreenSize.width / 20,
+          right: ScreenSize.width / 20,
+        ),
+        child: Column(
+          children: [
+            SearchBarNameWidget(controller: controller),
+            Expanded(
+              child: ListView.separated(
+                itemCount: users.length,
+                physics: const BouncingScrollPhysics(),
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 12);
+                },
+                itemBuilder: (context, index) {
+                  return UserSearchTileWidget(userSearchResult: users[index]);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+List<UserSearchResult> users = [
+  UserSearchResult(
+    name: "Laila Ahmed",
+    image:
+        "https://www.fluentu.com/blog/wp-content/uploads/site//4/african-american-young-mom-with-curly-hair-in-stylish-outfit-feeling-grateful-and-happy-receiving-surprise-gift-from-kid-holding-palms-on-heart-smiling.jpg",
+  ),
+  UserSearchResult(
+    name: "Mohamed Ali",
+    image:
+        "https://img.magnific.com/free-photo/young-handsome-man-wearing-casual-tshirt-blue-background-happy-face-smiling-with-crossed-arms-looking-camera-positive-person_839833-12963.jpg?semt=ais_hybrid&w=740&q=80",
+  ),
+];
+
+-----------------------------------------
+
+--- FILE: \lib\features\Search\widgets\search_bar_name.dart | 2026-07-04 04:47 ---
+import 'package:flutter/material.dart';
+
+class SearchBarNameWidget extends StatelessWidget {
+  const SearchBarNameWidget({super.key, required this.controller});
+  final TextEditingController controller;
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      style: Theme.of(context).textTheme.bodyLarge,
+      cursorColor: Theme.of(context).primaryColor,
+      decoration: InputDecoration(
+        hintText: 'Search by name',
+        hintStyle: Theme.of(context).textTheme.headlineMedium,
+        prefixIcon: Icon(Icons.search, color: Theme.of(context).primaryColor),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\features\Search\widgets\user_search_tile.dart | 2026-07-04 04:47 ---
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/features/Search/models/user_search_result.dart';
+import 'package:flutter/material.dart';
+
+class UserSearchTileWidget extends StatelessWidget {
+  const UserSearchTileWidget({super.key, required this.userSearchResult});
+  final UserSearchResult userSearchResult;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: ScreenSize.height / 50,
+        bottom: ScreenSize.height / 50,
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: ScreenSize.width / 20,
+            backgroundImage: NetworkImage(userSearchResult.image),
+          ),
+          SizedBox(width: ScreenSize.width / 20),
+          Expanded(
+            child: Text(
+              userSearchResult.name,
+              style: Theme.of(context).textTheme.bodyMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \lib\firebase_options.dart | 2026-07-04 08:28 ---
+// File generated by FlutterFire CLI.
+// ignore_for_file: type=lint
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+
+/// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// Example:
+/// ```dart
+/// import 'firebase_options.dart';
+/// // ...
+/// await Firebase.initializeApp(
+///   options: DefaultFirebaseOptions.currentPlatform,
+/// );
+/// ```
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    if (kIsWeb) {
+      return web;
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        return ios;
+      case TargetPlatform.macOS:
+        return macos;
+      case TargetPlatform.windows:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      default:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions are not supported for this platform.',
+        );
+    }
+  }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB5kBkIpy0nk_DxF0totabJ_a2c60T_P_w',
+    appId: '1:593871612144:web:368a05f347a0ea1144ba35',
+    messagingSenderId: '593871612144',
+    projectId: 'chat-app-9d150',
+    authDomain: 'chat-app-9d150.firebaseapp.com',
+    storageBucket: 'chat-app-9d150.firebasestorage.app',
+    measurementId: 'G-GW4YZ06412',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDNRgiz6x8BqN0Uc1Pn30WKFhWthlSC5QQ',
+    appId: '1:593871612144:android:f065fcbb6b0eeb8844ba35',
+    messagingSenderId: '593871612144',
+    projectId: 'chat-app-9d150',
+    storageBucket: 'chat-app-9d150.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDQoMVeMNAcmTJviEpb_ToTNc3xzuIBSdE',
+    appId: '1:593871612144:ios:d5e400830730c51644ba35',
+    messagingSenderId: '593871612144',
+    projectId: 'chat-app-9d150',
+    storageBucket: 'chat-app-9d150.firebasestorage.app',
+    iosBundleId: 'com.example.chatAppUi',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDQoMVeMNAcmTJviEpb_ToTNc3xzuIBSdE',
+    appId: '1:593871612144:ios:d5e400830730c51644ba35',
+    messagingSenderId: '593871612144',
+    projectId: 'chat-app-9d150',
+    storageBucket: 'chat-app-9d150.firebasestorage.app',
+    iosBundleId: 'com.example.chatAppUi',
+  );
+}
+
+-----------------------------------------
+
+--- FILE: \lib\main.dart | 2026-07-14 11:37 ---
+import 'package:chat_app_ui/core/cubit/theme_cubit.dart';
+import 'package:chat_app_ui/core/service/cach_helper.dart';
+import 'package:chat_app_ui/core/utils/screen_size.dart';
+import 'package:chat_app_ui/core/utils/theme/dark_theme.dart';
+import 'package:chat_app_ui/core/utils/theme/light_theme.dart';
+import 'package:chat_app_ui/features/Auth/cubit/auth_cubit.dart';
+import 'package:chat_app_ui/features/Auth/views/login_view.dart';
+import 'package:chat_app_ui/features/Auth/views/sign_up_view.dart';
+import 'package:chat_app_ui/features/Home/views/home_view.dart';
+import 'package:chat_app_ui/features/Intro/views/intro_view.dart';
+import 'package:chat_app_ui/features/Search/views/search_view.dart';
+import 'package:chat_app_ui/features/chats/views/chat_bubble_view.dart';
+import 'package:chat_app_ui/features/chats/views/chat_home.dart';
+import 'package:chat_app_ui/features/chats/views/chats_view.dart';
+import 'package:chat_app_ui/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await CacheHelper.init();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => AuthCubit()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenSize.init(context);
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, mode) {
+        return MaterialApp(
+          builder: (context, child) {
+            final mq = MediaQuery.of(context);
+            final width = mq.size.width;
+
+            // معامل مرِن حسب الدزاين المرجعي 375dp
+            final baseScale = (width / 375).clamp(0.85, 1.25);
+
+            // إحترام إعداد المستخدم + إضافة معاملنا
+            final systemFactor = mq.textScaler.scale(
+              baseScale,
+            ); // من إعدادات الجهاز
+            final isTablet = width >= 600; // بريك بوينت بسيط
+            final tunedFactor =
+                (systemFactor * baseScale) * (isTablet ? 1.05 : 1.0);
+
+            return MediaQuery(
+              // نرجّع نفس الـ MediaQueryData مع تعديل عامل تكبير النص فقط
+              data: mq.copyWith(textScaler: TextScaler.linear(tunedFactor)),
+              child: child!,
+            );
+          },
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: AppLightTheme.theme,
+          darkTheme: AppDarkTheme.theme,
+          themeMode: mode,
+          routes: {
+            IntroView.routeName: (context) => const IntroView(),
+            LoginView.routeName: (context) => const LoginView(),
+            SignUpView.routeName: (context) => const SignUpView(),
+            HomeView.routeName: (context) => const HomeView(),
+            ChatHome.routeName: (context) => const ChatHome(),
+            ChatsView.routeName: (context) => const ChatsView(),
+            ChatBubbleView.routeName: (context) => const ChatBubbleView(),
+            SearchView.routeName: (context) => const SearchView(),
+          },
+          initialRoute: FirebaseAuth.instance.currentUser != null
+              ? HomeView.routeName
+              : IntroView.routeName,
+        );
+      },
+    );
+  }
+}
+
+-----------------------------------------
+
+--- FILE: \test\widget_test.dart | 2026-07-04 04:47 ---
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:chat_app_ui/main.dart';
+
+void main() {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
+
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
+}
+
+-----------------------------------------
+
+--- FILE: \.flutter-plugins-dependencies | 2026-07-14 17:15 ---
+{"info":"This is a generated file; do not edit or check into version control.","plugins":{"ios":[{"name":"cloud_firestore","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\cloud_firestore-5.6.12\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_auth","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_auth-5.7.0\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_core","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_core-3.15.2\\\\","native_build":true,"dependencies":[],"dev_dependency":false},{"name":"google_sign_in_ios","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\google_sign_in_ios-6.3.0\\\\","shared_darwin_source":true,"native_build":true,"dependencies":[],"dev_dependency":false},{"name":"shared_preferences_foundation","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\shared_preferences_foundation-2.5.6\\\\","shared_darwin_source":true,"native_build":true,"dependencies":[],"dev_dependency":false}],"android":[{"name":"cloud_firestore","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\cloud_firestore-5.6.12\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_auth","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_auth-5.7.0\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_core","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_core-3.15.2\\\\","native_build":true,"dependencies":[],"dev_dependency":false},{"name":"google_sign_in_android","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\google_sign_in_android-7.2.15\\\\","native_build":true,"dependencies":[],"dev_dependency":false},{"name":"shared_preferences_android","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\shared_preferences_android-2.4.26\\\\","native_build":true,"dependencies":[],"dev_dependency":false}],"macos":[{"name":"cloud_firestore","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\cloud_firestore-5.6.12\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_auth","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_auth-5.7.0\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_core","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_core-3.15.2\\\\","native_build":true,"dependencies":[],"dev_dependency":false},{"name":"google_sign_in_ios","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\google_sign_in_ios-6.3.0\\\\","shared_darwin_source":true,"native_build":true,"dependencies":[],"dev_dependency":false},{"name":"shared_preferences_foundation","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\shared_preferences_foundation-2.5.6\\\\","shared_darwin_source":true,"native_build":true,"dependencies":[],"dev_dependency":false}],"linux":[{"name":"path_provider_linux","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\path_provider_linux-2.2.2\\\\","native_build":false,"dependencies":[],"dev_dependency":false},{"name":"shared_preferences_linux","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\shared_preferences_linux-2.4.1\\\\","native_build":false,"dependencies":["path_provider_linux"],"dev_dependency":false}],"windows":[{"name":"cloud_firestore","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\cloud_firestore-5.6.12\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_auth","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_auth-5.7.0\\\\","native_build":true,"dependencies":["firebase_core"],"dev_dependency":false},{"name":"firebase_core","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_core-3.15.2\\\\","native_build":true,"dependencies":[],"dev_dependency":false},{"name":"path_provider_windows","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\path_provider_windows-2.3.0\\\\","native_build":false,"dependencies":[],"dev_dependency":false},{"name":"shared_preferences_windows","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\shared_preferences_windows-2.4.1\\\\","native_build":false,"dependencies":["path_provider_windows"],"dev_dependency":false}],"web":[{"name":"cloud_firestore_web","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\cloud_firestore_web-4.4.12\\\\","dependencies":["firebase_core_web"],"dev_dependency":false},{"name":"firebase_auth_web","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_auth_web-5.15.3\\\\","dependencies":["firebase_core_web"],"dev_dependency":false},{"name":"firebase_core_web","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\firebase_core_web-2.24.1\\\\","dependencies":[],"dev_dependency":false},{"name":"google_sign_in_web","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\google_sign_in_web-1.1.3\\\\","dependencies":[],"dev_dependency":false},{"name":"shared_preferences_web","path":"C:\\\\Users\\\\teto0\\\\AppData\\\\Local\\\\Pub\\\\Cache\\\\hosted\\\\pub.dev\\\\shared_preferences_web-2.4.3\\\\","dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"cloud_firestore","dependencies":["cloud_firestore_web","firebase_core"]},{"name":"cloud_firestore_web","dependencies":["firebase_core","firebase_core_web"]},{"name":"firebase_auth","dependencies":["firebase_auth_web","firebase_core"]},{"name":"firebase_auth_web","dependencies":["firebase_core","firebase_core_web"]},{"name":"firebase_core","dependencies":["firebase_core_web"]},{"name":"firebase_core_web","dependencies":[]},{"name":"google_sign_in","dependencies":["google_sign_in_android","google_sign_in_ios","google_sign_in_web"]},{"name":"google_sign_in_android","dependencies":[]},{"name":"google_sign_in_ios","dependencies":[]},{"name":"google_sign_in_web","dependencies":[]},{"name":"path_provider_linux","dependencies":[]},{"name":"path_provider_windows","dependencies":[]},{"name":"shared_preferences","dependencies":["shared_preferences_android","shared_preferences_foundation","shared_preferences_linux","shared_preferences_web","shared_preferences_windows"]},{"name":"shared_preferences_android","dependencies":[]},{"name":"shared_preferences_foundation","dependencies":[]},{"name":"shared_preferences_linux","dependencies":["path_provider_linux"]},{"name":"shared_preferences_web","dependencies":[]},{"name":"shared_preferences_windows","dependencies":["path_provider_windows"]}],"date_created":"2026-07-14 17:15:55.034134","version":"3.44.4","swift_package_manager_enabled":{"ios":false,"macos":false}}
+-----------------------------------------
+
+--- FILE: \.gitignore | 2026-07-04 04:47 ---
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+-----------------------------------------
+
+--- FILE: \devtools_options.yaml | 2026-07-04 07:13 ---
+description: This file stores settings for Dart & Flutter DevTools.
+documentation: https://docs.flutter.dev/tools/devtools/extensions#configure-extension-enablement-states
+extensions:
+
+-----------------------------------------
+
+--- FILE: \firebase.json | 2026-07-04 08:24 ---
+{"flutter":{"platforms":{"android":{"default":{"projectId":"chat-app-9d150","appId":"1:593871612144:android:f065fcbb6b0eeb8844ba35","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"chat-app-9d150","configurations":{"android":"1:593871612144:android:f065fcbb6b0eeb8844ba35","ios":"1:593871612144:ios:d5e400830730c51644ba35","macos":"1:593871612144:ios:d5e400830730c51644ba35","web":"1:593871612144:web:368a05f347a0ea1144ba35"}}}}}}
+-----------------------------------------
+
+--- FILE: \pubspec.yaml | 2026-07-14 15:15 ---
+name: chat_app_ui
+description: "A new Flutter project for Easy Chat app with Firebase."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  shared_preferences: ^2.2.3
+  
+  firebase_core: ^3.2.0
+  firebase_auth: ^5.1.1
+  cloud_firestore: ^5.1.0
+  
+  meta: ^1.11.0
+  google_sign_in: ^7.2.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    # خط بوبينز المتاح عندك في الفولدر
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+
+    # الخط العربي المميز المتاح عندك في الفولدر
+    - family: IBMPlexSansArabic
+      fonts:
+        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+
+-----------------------------------------
+
+--- FILE: \README.md | 2026-07-04 04:47 ---
+# chat_app_ui
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+
+-----------------------------------------
+

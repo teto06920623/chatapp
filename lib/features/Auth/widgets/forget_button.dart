@@ -10,7 +10,7 @@ class ForgetButtonWidget extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: onTap,
-          child: Text(
+          child: const Text(
             "Forgot Password",
             style: TextStyle(fontSize: 10, color: Color(0xff993F3F)),
           ),

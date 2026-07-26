@@ -1,4 +1,3 @@
-import 'package:chat_app_ui/core/utils/colors.dart';
 import 'package:chat_app_ui/core/utils/screen_size.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +36,7 @@ class _SecretTextFieldState extends State<SecretTextField> {
           child: TextFormField(
             obscureText: obscureText,
             controller: widget.controller,
-            cursorColor: LightColors.primaryColor,
+            cursorColor: Theme.of(context).primaryColor,
             style: Theme.of(context).textTheme.displaySmall,
             keyboardType: widget.textInputType,
             decoration: InputDecoration(

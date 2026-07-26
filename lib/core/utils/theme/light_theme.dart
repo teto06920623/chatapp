@@ -5,9 +5,29 @@ import 'package:flutter/material.dart';
 class AppLightTheme {
   static ThemeData theme = ThemeData(
     brightness: Brightness.light,
-
     primaryColor: LightColors.primaryColor,
     scaffoldBackgroundColor: LightColors.backgroundColor,
+    cardColor: Colors.white,
+    fontFamily: 'IBMPlexSansArabic',
+    colorScheme: const ColorScheme.light(
+      primary: LightColors.primaryColor,
+      surface: Colors.white,
+      onSurface: LightColors.textColor,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: LightColors.backgroundColor,
+      elevation: 0,
+      iconTheme: IconThemeData(color: LightColors.textColor),
+      titleTextStyle: TextStyle(
+        color: LightColors.textColor,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'IBMPlexSansArabic',
+      ),
+    ),
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: LightColors.primaryColor,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: LightColors.primaryColor,
@@ -33,60 +53,43 @@ class AppLightTheme {
         ),
       ),
     ),
-    fontFamily: 'Poppins',
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       displayLarge: TextStyle(
-        color: LightColors.textColor,
-        fontSize: 30,
-        fontWeight: FontWeight.w900,
-      ),
+          color: LightColors.textColor,
+          fontSize: 30,
+          fontWeight: FontWeight.bold),
       displayMedium: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w900,
-        color: LightColors.textColor,
-      ),
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: LightColors.textColor),
       displaySmall: TextStyle(
-        color: LightColors.textColor,
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-      ),
+          color: LightColors.textColor,
+          fontSize: 13,
+          fontWeight: FontWeight.normal),
       headlineLarge: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: LightColors.primaryColor,
-      ),
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: LightColors.primaryColor),
       headlineMedium: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: LightColors.disableColor,
-      ),
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: LightColors.disableColor),
       headlineSmall: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: LightColors.primaryColor,
-      ),
-
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: LightColors.primaryColor),
       bodyLarge: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: LightColors.textColor,
-      ),
-
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: LightColors.textColor),
       bodyMedium: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: LightColors.textColor,
-      ),
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+          color: LightColors.textColor),
       titleMedium: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
+          fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),
       titleSmall: TextStyle(
-        fontSize: 10,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
+          fontSize: 10, fontWeight: FontWeight.normal, color: Colors.white),
       bodySmall: TextStyle(fontSize: 9, color: LightColors.textColor),
     ),
   );

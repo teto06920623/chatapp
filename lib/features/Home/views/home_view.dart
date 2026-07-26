@@ -1,12 +1,22 @@
-import 'package:chat_app_ui/core/utils/screen_size.dart';
-import 'package:chat_app_ui/features/chats/views/chats_view.dart';
+import 'package:chat_app_ui/features/Home/cubit/home_cubit.dart';
+import 'package:chat_app_ui/features/Home/marketplace/views/marketplace_view.dart';
+import 'package:chat_app_ui/features/Home/notifications/views/notifications_view.dart';
+import 'package:chat_app_ui/features/Home/views/create_text_story_view.dart';
+import 'package:chat_app_ui/features/Home/views/friends_view.dart';
+import 'package:chat_app_ui/features/Home/watch/views/watch_view.dart';
 import 'package:chat_app_ui/features/Profile/views/profile_view.dart';
-import 'package:chat_app_ui/features/Search/views/search_view.dart';
+import 'package:chat_app_ui/features/chats/views/chat_home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/create_post_container.dart';
+import '../widgets/stories_container.dart';
+import '../widgets/post_container.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
-  static const routeName = "HomeView";
+  static const routeName = 'HomeView';
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -14,58 +24,87 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return DefaultTabController(
-      length: 3,
+      length: 6,
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          title: Text(
-            "Easy Chat",
-            style: Theme.of(context).textTheme.displayMedium,
-          ),
+        backgroundColor: isDark
+            ? Theme.of(context).scaffoldBackgroundColor
+            : Colors.grey[200],
+        appBar: CustomHomeAppBar(
+          onMessengerPressed: () {
+            Navigator.pushReplacementNamed(context, ChatHome.routeName);
+          },
         ),
-        body: Column(
+        body: TabBarView(
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: TabBar(
-                overlayColor: WidgetStateProperty.all(Colors.transparent),
-                splashFactory: NoSplash.splashFactory,
-                isScrollable: true,
-                //labelColor: Theme.of(context).primaryColor,
-                labelStyle: Theme.of(context).textTheme.headlineLarge,
-                unselectedLabelStyle: Theme.of(
-                  context,
-                ).textTheme.headlineMedium,
-                labelPadding: EdgeInsets.symmetric(
-                  horizontal: ScreenSize.width / 10,
-                ),
-                indicatorColor: Theme.of(context).primaryColor,
-                indicatorWeight: 2,
-                indicatorSize: TabBarIndicatorSize.label,
-                dividerColor: Colors.transparent,
-                tabAlignment: TabAlignment.center,
-                tabs: [
-                  Tab(text: 'Chats'),
-                  Tab(text: 'Search'),
-                  Tab(text: 'Profile'),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            const Expanded(
-              child: TabBarView(
-                children: [ChatsView(), SearchView(), ProfileView()],
-              ),
-            ),
+            _buildHomeFeed(context),
+            const FriendsView(),
+            const WatchView(),
+            const MarketplaceView(),
+            const NotificationsView(),
+            const ProfileView(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHomeFeed(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        if (state is HomeLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is HomeLoaded) {
+          return ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: state.posts.length + 2,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return const CreatePostContainer();
+              } else if (index == 1) {
+                return Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    StoriesContainer(
+                      stories: state.stories,
+                      onAddStory: () {
+                        Navigator.pushNamed(
+                            context, CreateTextStoryView.routeName);
+                      },
+                      onDeleteStory: (storyId) {
+                        context.read<HomeCubit>().deleteStory(storyId);
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              }
+
+              final post = state.posts[index - 2];
+              return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: PostContainer(
+                    postId: post.postId,
+                    userId: post.userId,
+                    userName: post.userName,
+                    createdAt: post.createdAt, // بدلاً من time: 'منذ قليل'
+                    profileImage: post.userImage ?? '',
+                    postText: post.postText,
+                    postImage: post.postImage,
+                    likes: post.likes,
+                    onDelete: () {
+                      context.read<HomeCubit>().deletePost(post.postId);
+                    },
+                  ));
+            },
+          );
+        } else if (state is HomeError) {
+          return Center(child: Text('خطأ: ${state.message}'));
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

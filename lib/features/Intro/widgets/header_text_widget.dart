@@ -12,9 +12,11 @@ class HeaderTextWidget extends StatelessWidget {
         top: ScreenSize.height / 10,
         bottom: ScreenSize.height / 30,
       ),
-      child: Text(
-        "Get Closer To EveryOne",
-        style: Theme.of(context).textTheme.displayLarge,
+      child: Center(
+        child: Text(
+          "Get Closer To EveryOne",
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:chat_app_ui/core/utils/colors.dart';
 import 'package:chat_app_ui/core/utils/screen_size.dart';
 import 'package:flutter/material.dart';
 
@@ -27,10 +26,10 @@ class NormalTextField extends StatelessWidget {
           key: formKey,
           child: TextFormField(
             controller: controller,
-            cursorColor: LightColors.primaryColor,
+            cursorColor: Theme.of(context).primaryColor,
             style: Theme.of(context).textTheme.displaySmall,
             keyboardType: textInputType,
-            decoration: InputDecoration(),
+            decoration: const InputDecoration(),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Must be enter the $label';

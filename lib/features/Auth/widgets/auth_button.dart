@@ -14,7 +14,7 @@ class AuthButtonWidget extends StatelessWidget {
           style: Theme.of(context).elevatedButtonTheme.style,
           child: Text(
             title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
         ),
       ],

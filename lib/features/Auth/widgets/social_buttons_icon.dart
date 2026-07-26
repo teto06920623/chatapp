@@ -4,36 +4,50 @@ import 'package:flutter/material.dart';
 class SocialButtonsIconWidget extends StatelessWidget {
   const SocialButtonsIconWidget({
     super.key,
-    required this.onTapFacebook,
     required this.onTapGoogle,
   });
-  final VoidCallback onTapFacebook;
+
   final VoidCallback onTapGoogle;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: onTapFacebook,
-          child: Image.asset(
-            "assets/images/facebook.png",
-            height: ScreenSize.height / 20,
-            width: ScreenSize.height / 20,
-            fit: BoxFit.cover,
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return InkWell(
+      onTap: onTapGoogle,
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        width: double.infinity,
+        height: ScreenSize.height / 16,
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xff2A2A2A) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+            width: 1.2,
           ),
         ),
-        SizedBox(width: ScreenSize.width / 20),
-        GestureDetector(
-          onTap: onTapGoogle,
-          child: Image.asset(
-            "assets/images/google.png",
-            height: ScreenSize.height / 25,
-            width: ScreenSize.height / 25,
-            fit: BoxFit.cover,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/images/google.png",
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "Continue with Google",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
